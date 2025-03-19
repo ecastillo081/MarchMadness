@@ -2,10 +2,10 @@ import pandas as pd
 import random
 import requests
 import json
-from token import GITHUB_TOKEN
+from credentials.token import GITHUB_TOKEN, GIST_ID
 
 # 🔹 Update this with the actual path to your Excel file
-file_path = "C:/Users/CashTO/Desktop/march_madness.xlsx"
+file_path = "C:/Users/CashTO/Desktop/March Madness Randomizer.xlsx"
 
 # 🔹 Load the Excel sheets
 players_df = pd.read_excel(file_path, sheet_name="Players")  # Adjust sheet name if needed
@@ -27,7 +27,7 @@ for i, team in enumerate(teams):
 result_text = "\n".join([f"{player}: {', '.join(team_list)}" for player, team_list in assignments.items()])
 
 # 🔹 GitHub API credentials
-gist_url = "https://api.github.com/gists"
+gist_url = f"https://api.github.com/gists/{GIST_ID}"
 headers = {"Authorization": f"token {GITHUB_TOKEN}"}
 
 # Prepare payload for GitHub Gist
@@ -37,8 +37,8 @@ payload = {
     "files": {"march_madness_assignments.txt": {"content": result_text}}
 }
 
-# Upload to GitHub Gist
-response = requests.post(gist_url, headers=headers, data=json.dumps(payload))
+# Send request to update Gist
+response = requests.patch(gist_url, headers=headers, data=json.dumps(payload))
 
 # Output result
 if response.status_code == 201:
