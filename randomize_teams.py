@@ -41,8 +41,8 @@ payload = {
 response = requests.patch(gist_url, headers=headers, data=json.dumps(payload))
 
 # Output result
-if response.status_code == 201:
-    gist_link = response.json()["html_url"]
-    print(f"✅ Assignments uploaded successfully!\nView here: {gist_link}")
+if response.ok:
+    gist_url = response.json().get("html_url", f"https://gist.github.com/{GIST_ID}")
+    print(f"✅ Assignments updated successfully!\nView here: {gist_url}")
 else:
-    print(f"❌ Failed to upload to Gist: {response.text}")
+    print(f"❌ Failed to update Gist. HTTP Status: {response.status_code}\nResponse: {response.text}")
